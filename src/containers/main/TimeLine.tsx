@@ -26,39 +26,23 @@ const defaultData: TimelineData = {
 export default function NDIETimeline() {
   const [timelineData, setTimelineData] = useState<TimelineData>(defaultData);
   const [selectedYear, setSelectedYear] = useState("2024");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       try {
         const db = await getFirebaseDb();
-        if (!db) {
-          setIsLoading(false);
-          return;
-        }
+        if (!db) return;
 
         const { doc, getDoc } = await import("firebase/firestore");
         const docRef = doc(db, "history", "timeline");
         const docSnap = await getDoc(docRef);
-        if (docSnap.exists() && Object.keys(docSnap.data()).length > 0) {
+        if (docSnap.exists()) {
           const data = docSnap.data() as TimelineData;
-          // 내부 배열이 모두 비어있는지 확인
-          const hasItems = Object.values(data).some(arr => arr.length > 0);
-          if (hasItems) {
-            setTimelineData(data);
-            const loadedYears = Object.keys(data).sort();
-            if (loadedYears.length > 0) {
-              setSelectedYear(loadedYears[loadedYears.length - 1]);
-            }
-          } else {
-            // 빈 배열만 있다면 기본 데이터 보여주기
-            const defYears = Object.keys(defaultData).sort();
-            if (defYears.length > 0) setSelectedYear(defYears[defYears.length - 1]);
-          }
-        } else {
-          // Fallback if data doesn't exist
-          const defYears = Object.keys(defaultData).sort();
-          if (defYears.length > 0) setSelectedYear(defYears[defYears.length - 1]);
+          setTimelineData(data);
+          const years = Object.keys(data).sort();
+          if (years.length > 0) setSelectedYear(years[0]);
         }
       } catch (e) {
         console.error("연혁 로드 실패:", e);
@@ -69,56 +53,75 @@ export default function NDIETimeline() {
     loadData();
   }, []);
 
-  if (isLoading) return null;
-
   const years = Object.keys(timelineData).sort();
   const entries = timelineData[selectedYear] || [];
 
   return (
     <div className="text-black font-sans relative pl-8 md:pl-0">
-      {/* 제목 */}
-      <h1 className="text-2xl font-bold mb-12">
+      <h1 className="text-2xl font-bold mb-12 text-center md:text-left">
         엔디(<span className="text-[#FFA037] font-bold">NDIE</span>)의{" "}
         <span className="text-[#FFA037] font-bold">연혁</span>은 다음과 같습니다
       </h1>
-      <div className="flex items-center gap-6 text-xl mb-8 md:mb-12 overflow-x-auto whitespace-nowrap scrollbar-hide">
+
+      <div className="flex items-center gap-2 md:gap-6 text-xl mb-8 md:mb-12 overflow-x-auto whitespace-nowrap scrollbar-hide pb-2">
         {years.map((year, index) => (
           <React.Fragment key={year}>
             <button
-              className={`font-bold ${selectedYear === year ? "text-black" : "text-gray-400"
-                }`}
+              className={`font-bold transition-all duration-300 cursor-pointer relative pb-2 px-1 group ${
+                selectedYear === year
+                  ? "text-black scale-110"
+                  : "text-gray-400 hover:text-gray-700"
+              }`}
               onClick={() => setSelectedYear(year)}
             >
-              {year}
+              <span className="flex items-center gap-1">
+                {selectedYear === year && (
+                  <span className="text-[#FFA037] text-sm">▶</span>
+                )}
+                {year}
+              </span>
+              <div
+                className={`absolute bottom-0 left-0 h-[3px] bg-[#FFA037] rounded-full transition-all duration-300 ${
+                  selectedYear === year ? "w-full" : "w-0 group-hover:w-full"
+                }`}
+              />
             </button>
             {index < years.length - 1 && (
-              <div className="w-12 h-px bg-gray-300" />
+              <div className="w-6 md:w-10 h-px bg-gray-200" />
             )}
           </React.Fragment>
         ))}
       </div>
-      <div className="relative pl-10">
-        <div className="absolute left-9 top-2 bottom-0 w-[2px] bg-gray-200 z-0" />
-        <div className="absolute -left-10 top-1 text-lg font-bold bg-[#F8F8F8] px-1 z-10">
-          {selectedYear}
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-16">
+          <div className="w-8 h-8 border-4 border-[#FFA037] border-t-transparent rounded-full animate-spin" />
         </div>
-        {entries.map((entry, index) => (
-          <div key={index} className="relative mb-14 pl-6 z-10">
-            <div
-              className={`absolute left-[-0.65rem] top-[0.35rem] w-3.5 h-3.5 rounded-full ${entry.type === "filled"
-                  ? "bg-[#D1D5DB]"
-                  : "border-2 border-[#D1D5DB] bg-white"
-                }`}
-            />
-            <div className="text-[17px] font-bold mb-2">
-              {entry.date} {entry.title}
-            </div>
-            <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">
-              {entry.description}
-            </p>
+      ) : (
+        <div className="relative pl-10">
+          <div className="absolute left-9 top-2 bottom-0 w-[2px] bg-gray-200 z-0" />
+          <div className="absolute -left-10 top-1 text-lg font-bold bg-[#F8F8F8] px-1 z-10 text-[#FFA037]">
+            {selectedYear}
           </div>
-        ))}
-      </div>
+          {entries.map((entry, index) => (
+            <div key={index} className="relative mb-10 pl-6 z-10 group">
+              <div
+                className={`absolute left-[-0.65rem] top-[0.45rem] w-3.5 h-3.5 rounded-full transition-transform duration-200 group-hover:scale-125 ${
+                  entry.type === "filled"
+                    ? "bg-[#FFA037]"
+                    : "border-2 border-[#FFA037] bg-white"
+                }`}
+              />
+              <div className="text-[17px] font-bold mb-1 group-hover:text-[#FFA037] transition-colors duration-200">
+                {entry.date} {entry.title}
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {entry.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

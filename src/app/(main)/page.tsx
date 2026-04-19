@@ -8,8 +8,6 @@ import ContentContainer from "@/containers/main/ContentContainer";
 import NoticeContainer from "@/containers/main/NoticeContainer";
 import HomeBanner from "@/containers/main/HomeBanner";
 import TimeLine from "@/containers/main/TimeLine";
-import OrgChart from "@/containers/main/OrgChart";
-import InquiryForm from "@/containers/main/InquiryForm";
 import { getFirebaseDb } from "@/lib/firebase";
 
 type IntroConfig = {
@@ -33,61 +31,53 @@ const defaultTheme: ThemeConfig = {
 export default function Home() {
   const [intro, setIntro] = useState<IntroConfig>(defaultIntro);
   const [theme, setTheme] = useState<ThemeConfig>(defaultTheme);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadConfig = async () => {
       try {
         const db = await getFirebaseDb();
-        if (!db) {
-          setIsLoading(false);
-          return;
-        }
+        if (!db) return;
 
         const { doc, getDoc } = await import("firebase/firestore");
         const docRef = doc(db, "siteConfig", "main");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          if (data.intro) {
-            setIntro({ 
-              ...defaultIntro, 
-              highlightWord: data.intro.highlightWord || defaultIntro.highlightWord,
-              description: defaultIntro.description, // 사용자 요청으로 긴 글자 고정
-            });
-          }
+          if (data.intro) setIntro({ ...defaultIntro, ...data.intro });
           if (data.theme) setTheme({ ...defaultTheme, ...data.theme });
         }
       } catch (e) {
         console.error("사이트 설정 로드 실패:", e);
-      } finally {
-        setIsLoading(false);
       }
     };
     loadConfig();
   }, []);
 
-  if (isLoading) return <div className="min-h-[50rem]" />;
-
   return (
     <div>
-      <ContentContainer>
+      <ContentContainer className="min-h-[30rem] md:min-h-[45rem]">
         <Image src={Main} alt={"background"} className="absolute top-[-20px] z-0 left-0" />
         <HomeBanner />
       </ContentContainer>
       <NoticeContainer />
-      <ContentContainer className="py-20 flex gap-4 flex-col">
-        <p className="text-2xl md:text-[2rem] font-extrabold mb-4">
-          <span style={{ color: theme.primaryColor }}>{intro.highlightWord}</span> 소개
-        </p>
-        <Image src={A} alt="a" className="max-w-full h-auto" />
-        <p className="text-center font-semibold text-lg md:text-2xl whitespace-pre-line">
-          {intro.description}
-        </p>
-        <Image src={B} alt="b" className="ml-auto max-w-full h-auto" />
-      </ContentContainer>
-      <ContentContainer>
-        <OrgChart />
+      <ContentContainer className="flex flex-col items-center">
+        <div className="w-full max-w-4xl z-10">
+          <p className="text-3xl md:text-5xl font-black mb-12 text-center leading-tight">
+            <span style={{ color: theme.primaryColor }}>{intro.highlightWord}</span> 소개
+          </p>
+
+          <div className="relative p-10 md:p-16 z-10">
+            <Image src={A} alt="" className="absolute top-0 left-0 w-20 md:w-28 h-auto" />
+            <Image src={B} alt="" className="absolute bottom-0 right-0 w-20 md:w-28 h-auto" />
+            <div className="flex flex-col gap-4">
+              {intro.description.split('\n').map((line, i) => (
+                <p key={i} className="text-lg md:text-xl font-medium text-gray-700 leading-relaxed break-keep">
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
       </ContentContainer>
       <ContentContainer>
         <TimeLine />

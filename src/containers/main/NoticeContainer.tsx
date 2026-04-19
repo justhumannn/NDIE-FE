@@ -55,51 +55,53 @@ export default function NoticeContainer() {
   };
 
   return (
-    <div className="relative h-[11.25rem] w-full overflow-hidden border-t border-b border-[#EAEAEA] bg-white">
-      <button
-        className={`${baseStyle} absolute left-0 top-0 h-full border-r border-[#EAEAEA] text-2xl z-10 disabled:text-gray-300 bg-white`}
-        onClick={() => handleSlide("prev")}
-        disabled={isAnimating}
-      >
-        ◀
-      </button>
-      <div className="w-full h-full overflow-hidden px-12 md:px-[7.5rem]"> {/* 좌우 버튼 공간 확보 */}
-        <div
-          className="flex h-full transition-transform duration-300 ease-in-out"
-          style={{
-            width: `${notices.length * 100}%`,
-            transform: `translateX(-${(100 / notices.length) * currentIndex}%)`,
-          }}
+    <div className="relative mx-auto max-w-7xl my-10 px-4">
+      <div className="relative h-[11.25rem] w-full overflow-hidden rounded-[2rem] shadow-[0_10px_40px_rgba(0,0,0,0.05)] border border-[#EAEAEA] bg-white">
+        <button
+          className={`${baseStyle} absolute left-0 top-0 h-full border-r border-[#EAEAEA] text-xl z-10 disabled:text-gray-200 bg-white hover:bg-gray-50 transition-colors`}
+          onClick={() => handleSlide("prev")}
+          disabled={isAnimating}
         >
-          {Array.isArray(notices) && notices.map((notice, index) => (
-            <div
-              key={index}
-              className="w-full flex-shrink-0 p-6"
-              style={{ width: `${100 / notices.length}%` }}
-            >
-              <p className="text-sm text-gray-400 mb-1">공지사항</p>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold text-black truncate max-w-[80%]">
+          <span className="transform hover:scale-125 transition-transform inline-block">◀</span>
+        </button>
+        <div className="w-full h-full overflow-hidden px-14 md:px-[7.5rem]">
+          <div
+            className="flex h-full transition-transform duration-500 ease-out"
+            style={{
+              width: `${notices.length * 100}%`,
+              transform: `translateX(-${(100 / notices.length) * currentIndex}%)`,
+            }}
+          >
+            {Array.isArray(notices) && notices.map((notice, index) => (
+              <div
+                key={index}
+                className="w-full flex-shrink-0 p-8 flex flex-col justify-center"
+                style={{ width: `${100 / notices.length}%` }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-3 py-1 bg-orange-100 text-[#FFA037] text-[10px] font-bold rounded-full">NOTICE</span>
+                  <span className="text-xs text-gray-400">
+                    {notice.createdAt.slice(0, 10).replaceAll("-", ".")}
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 truncate mb-2 hover:text-[#FFA037] cursor-pointer transition-colors">
                   {notice.title}
                 </h3>
-                <span className="text-xs text-gray-400">
-                  {notice.createdAt.slice(0, 10).replaceAll("-", ".")}
-                </span>
+                <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">
+                  {notice.content}
+                </p>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                {notice.content}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+        <button
+          className={`${baseStyle} absolute right-0 top-0 h-full border-l border-[#EAEAEA] text-xl z-10 disabled:text-gray-200 bg-white hover:bg-gray-50 transition-colors`}
+          onClick={() => handleSlide("next")}
+          disabled={isAnimating}
+        >
+          <span className="transform hover:scale-125 transition-transform inline-block">▶</span>
+        </button>
       </div>
-      <button
-        className={`${baseStyle} absolute right-0 top-0 h-full border-l border-[#EAEAEA] text-2xl z-10 disabled:text-gray-300 bg-white`}
-        onClick={() => handleSlide("next")}
-        disabled={isAnimating}
-      >
-        ▶
-      </button>
     </div>
   );
 }

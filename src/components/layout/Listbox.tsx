@@ -83,10 +83,10 @@ export default function Listbox({ item, datas, name }: ListboxProps) {
         </div>
       </div>
 
-      <hr className="border border-black my-1" />
+      <div className="border-t-2 border-gray-900 mt-1" />
       {Array.isArray(filteredItems) ? (
         <>
-          <div className="hidden md:grid md:grid-cols-5 md:text-center md:text-sm md:font-semibold md:py-2 md:border-b md:border-gray-400">
+          <div className="hidden md:grid md:grid-cols-5 md:text-center md:text-sm md:font-semibold md:py-3 md:border-b md:border-gray-200 text-gray-600 bg-gray-50">
             <p>번호</p>
             <p>제목</p>
             <p>작성자</p>
@@ -94,47 +94,47 @@ export default function Listbox({ item, datas, name }: ListboxProps) {
             <p>조회</p>
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:flex md:flex-col md:gap-1 md:mt-1">
             {hasResults ? (
               filteredItems.map((i, index) => (
                 <div
                   key={i.id}
-                  className="grid grid-cols-5 cursor-pointer items-center border-b border-gray-200 py-3 text-center text-sm hover:bg-gray-50"
+                  className="grid grid-cols-5 cursor-pointer items-center border border-gray-100 rounded-lg px-2 py-3 text-center text-sm hover:bg-orange-50 hover:border-orange-200 hover:shadow-sm transition-all duration-150"
                   onClick={() => deslist(i.id)}
                 >
-                  <p>{filteredItems.length - index}</p>
-                  <p className="truncate">{i.title}</p>
-                  <p>{i.username || '관리자'}</p>
-                  <p>{formatDate(i.createdAt)}</p>
-                  <p>{i.views || 0}</p>
+                  <p className="text-gray-400">{filteredItems.length - index}</p>
+                  <p className="truncate font-medium text-gray-800 hover:text-[#ED9735]">{i.title}</p>
+                  <p className="text-gray-500">{i.username || '관리자'}</p>
+                  <p className="text-gray-500">{formatDate(i.createdAt)}</p>
+                  <p className="text-gray-500">{i.views || 0}</p>
                 </div>
               ))
             ) : (
-              <div className="py-6 text-center text-gray-500">검색 결과가 없습니다.</div>
+              <div className="py-12 text-center text-gray-400">검색 결과가 없습니다.</div>
             )}
           </div>
 
-          <div className="flex flex-col divide-y divide-gray-200 md:hidden">
+          <div className="flex flex-col gap-2 mt-2 md:hidden">
             {hasResults ? (
               filteredItems.map((i, index) => (
                 <button
                   key={i.id}
-                  className="flex flex-col items-start gap-2 py-3 text-left"
+                  className="flex flex-col items-start gap-2 px-4 py-3 text-left border border-gray-100 rounded-xl shadow-sm hover:shadow-md hover:border-orange-200 hover:bg-orange-50 transition-all duration-150"
                   onClick={() => deslist(i.id)}
                 >
                   <div className="flex w-full items-center justify-between gap-3">
-                    <span className="text-xs text-gray-500">#{filteredItems.length - index}</span>
+                    <span className="text-xs text-gray-400">#{filteredItems.length - index}</span>
                     <span className="text-xs text-gray-400">{formatDate(i.createdAt)}</span>
                   </div>
-                  <p className="w-full text-base font-semibold text-black">{i.title}</p>
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+                  <p className="w-full text-base font-semibold text-gray-900">{i.title}</p>
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
                     <span>{i.username || '관리자'}</span>
                     <span>조회 {i.views || 0}</span>
                   </div>
                 </button>
               ))
             ) : (
-              <div className="py-6 text-center text-gray-500">검색 결과가 없습니다.</div>
+              <div className="py-12 text-center text-gray-400">검색 결과가 없습니다.</div>
             )}
           </div>
         </>

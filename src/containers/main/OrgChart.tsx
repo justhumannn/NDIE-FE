@@ -32,16 +32,12 @@ const defaultData: OrgNode = {
 
 export default function OrgChart() {
   const [orgTreeData, setOrgTreeData] = useState<OrgNode>(defaultData);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const db = await getFirebaseDb();
-        if (!db) {
-          setIsLoading(false);
-          return;
-        }
+        if (!db) return;
 
         const { doc, getDoc } = await import("firebase/firestore");
         const docRef = doc(db, "organization", "chart");
@@ -51,17 +47,10 @@ export default function OrgChart() {
         }
       } catch (e) {
         console.error("조직도 로드 실패:", e);
-      } finally {
-        setIsLoading(false);
       }
     };
     loadData();
   }, []);
-
-  if (isLoading) return null;
-  // If the data is empty or still default (root), we hide it per user request
-  if (orgTreeData.name === "root" || !orgTreeData.name) return null;
-  
   return (
     <div className="flex flex-col items-center py-12 w-full overflow-x-auto">
       <div className="min-w-fit px-4">

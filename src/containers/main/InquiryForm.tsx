@@ -69,117 +69,118 @@ export default function InquiryForm() {
   };
 
   return (
-    // 전체 컨테이너 스타일 변경
-    // 이미지에 맞춰 배경색 제거, 중앙 정렬, 상단 패딩 추가
-    <div className="relative w-full min-h-screen flex flex-col items-center bg-[#F8F8F8] px-4 md:px-40 pt-10">
-      <div className="w-full max-w-6xl px-8 py-12 bg-white rounded-2xl shadow-sm mt-8"> {/* 내부 컨테이너 */}
-        <h1 className="text-4xl font-bold mb-16 text-gray-800">문의하기</h1> {/* 제목 스타일 */}
+    <div className="w-full max-w-5xl mx-auto px-4 py-16">
+      <div className="bg-white rounded-[3rem] shadow-2xl border border-gray-100 p-8 md:p-16">
+        <div className="mb-12">
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">문의하기</h1>
+          <p className="text-gray-500 font-medium">궁금하신 점이나 협업 제안을 남겨주시면 빠르게 답변해 드리겠습니다.</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-0 md:gap-x-20 gap-y-12 w-full">
-          {/* 왼쪽 섹션: 이름, 단체 또는 기관명, 이메일 */}
-          <div className="flex flex-col gap-10"> {/* 섹션 간격 조정 */}
-            <div>
-              <label htmlFor="name" className="block text-xl font-medium text-gray-800 mb-4">
-                이름
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="이름을 입력해주세요"
-                // 입력 필드 스타일 변경: 하단 테두리만, 배경 투명, 그림자 없음, 패딩 조정
-                className="w-full pb-3 border-b border-gray-300 bg-transparent text-xl text-gray-700 placeholder-gray-400 focus:outline-none"
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* 왼쪽 섹션 */}
+            <div className="space-y-8">
+              <div className="group">
+                <label htmlFor="name" className="block text-sm font-bold text-gray-400 mb-2 group-focus-within:text-orange-500 transition-colors uppercase tracking-widest">
+                  이름
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="성함을 입력해주세요"
+                  className="w-full py-4 border-b-2 border-gray-100 bg-transparent text-xl text-gray-800 placeholder-gray-300 focus:outline-none focus:border-orange-500 transition-all"
+                  required
+                />
+              </div>
 
-            <div>
-              <label htmlFor="organization" className="block text-xl font-medium text-gray-800 mb-4">
-                단체 또는 기관명
-              </label>
-              <input
-                type="text"
-                id="organization"
-                name="organization"
-                value={formData.organization}
-                onChange={handleChange}
-                placeholder="단체 또는 기관명을 입력해주세요"
-                className="w-full pb-3 border-b border-gray-300 bg-transparent text-xl text-gray-700 placeholder-gray-400 focus:outline-none"
-              />
-            </div>
+              <div className="group">
+                <label htmlFor="organization" className="block text-sm font-bold text-gray-400 mb-2 group-focus-within:text-orange-500 transition-colors uppercase tracking-widest">
+                  단체 또는 기관명
+                </label>
+                <input
+                  type="text"
+                  id="organization"
+                  name="organization"
+                  value={formData.organization}
+                  onChange={handleChange}
+                  placeholder="소속을 입력해주세요"
+                  className="w-full py-4 border-b-2 border-gray-100 bg-transparent text-xl text-gray-800 placeholder-gray-300 focus:outline-none focus:border-orange-500 transition-all"
+                />
+              </div>
 
-            <div>
-              <label htmlFor="email" className="block text-xl font-medium text-gray-800 mb-4">
-                이메일
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="보내는 분의 이메일을 입력해주세요"
-                className="w-full pb-3 border-b border-gray-300 bg-transparent text-xl text-gray-700 placeholder-gray-400 focus:outline-none"
-                required
-              />
-            </div>
-          </div>
-
-          {/* 오른쪽 섹션: 태그, 내용 */}
-          <div className="flex flex-col gap-10"> {/* 섹션 간격 조정 */}
-            <div>
-              <label className="block text-xl font-medium text-gray-800 mb-4">
-                태그
-              </label>
-              <div className="flex space-x-3">
-                {tags.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => handleTagClick(tag)}
-                    // 태그 버튼 스타일 변경: 회색 배경, 둥근 모서리, 선택 시 테두리
-                    className={`px-6 py-2 rounded-full text-lg font-semibold transition-colors duration-200
-                      ${formData.selectedTag === tag
-                        ? 'border border-gray-400 text-gray-800 bg-white' // 선택됨
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200' // 선택 안됨
-                      }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
+              <div className="group">
+                <label htmlFor="email" className="block text-sm font-bold text-gray-400 mb-2 group-focus-within:text-orange-500 transition-colors uppercase tracking-widest">
+                  이메일
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="회신받을 이메일 주소"
+                  className="w-full py-4 border-b-2 border-gray-100 bg-transparent text-xl text-gray-800 placeholder-gray-300 focus:outline-none focus:border-orange-500 transition-all"
+                  required
+                />
               </div>
             </div>
 
-            <div>
-              <label htmlFor="content" className="block text-xl font-medium text-gray-800 mb-4">
-                내용
-              </label>
-              <textarea
-                id="content"
-                name="content"
-                value={formData.content}
-                onChange={handleChange}
-                placeholder="문의할 내용을 입력해주세요"
-                rows={10}
-                // 텍스트 영역 스타일 변경: 테두리만, 배경 투명, 패딩 조정
-                className="w-full p-4 border border-gray-300 rounded-md bg-transparent text-xl text-gray-700 placeholder-gray-400 focus:outline-none resize-none"
-                required
-              ></textarea>
+            {/* 오른쪽 섹션 */}
+            <div className="space-y-8">
+              <div>
+                <label className="block text-sm font-bold text-gray-400 mb-4 uppercase tracking-widest">
+                  문의 유형
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => handleTagClick(tag)}
+                      className={`px-6 py-2 rounded-full text-base font-bold transition-all duration-200 transform active:scale-95
+                        ${formData.selectedTag === tag
+                          ? 'bg-orange-500 text-white shadow-lg' 
+                          : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+                        }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="group">
+                <label htmlFor="content" className="block text-sm font-bold text-gray-400 mb-2 group-focus-within:text-orange-500 transition-colors uppercase tracking-widest">
+                  내용
+                </label>
+                <textarea
+                  id="content"
+                  name="content"
+                  value={formData.content}
+                  onChange={handleChange}
+                  placeholder="문의 내용을 상세히 적어주세요"
+                  rows={6}
+                  className="w-full p-6 bg-gray-50 border-none rounded-[2rem] text-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all resize-none"
+                  required
+                ></textarea>
+              </div>
             </div>
           </div>
 
-          {/* 발송 버튼 (폼의 전체 너비에 걸쳐 오른쪽 정렬) */}
-          <div className="col-span-1 md:col-span-2 flex justify-end"> {/* col-span-2로 폼 전체 너비 사용 */}
+          <div className="flex justify-center pt-8">
             <button
               type="submit"
-              className="px-8 py-3 bg-white text-orange-500 border border-orange-500 text-xl font-semibold rounded-md shadow-sm hover:bg-orange-500 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 flex items-center"
+              className="group relative w-full md:w-auto px-16 py-6 bg-[#FFA037] text-white text-xl font-black rounded-2xl hover:bg-[#e88f2d] transition-all duration-300 transform hover:translate-y-[-4px] active:translate-y-0"
             >
-              <svg className="w-6 h-6 mr-3 -ml-1 transform rotate-45" fill="currentColor" viewBox="0 0 20 20" style={{ transformOrigin: 'center' }}>
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l.64-.213a1 1 0 00.108-.146l.75-1.5a1 1 0 00.08-.094l5-5a1 1 0 011.414 0l5 5a1 1 0 00.08.094l.75 1.5a1 1 0 00.108.146l.64.213a1 1 0 001.169-1.409l-7-14z"></path>
-              </svg>
-              발송
+              <span className="flex items-center justify-center">
+                문의 보내기
+                <svg className="w-6 h-6 ml-4 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+              </span>
             </button>
           </div>
         </form>

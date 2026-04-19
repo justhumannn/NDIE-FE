@@ -1,3 +1,4 @@
+import React from "react";
 import "@/lib/polyfill-localstorage";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -58,12 +59,16 @@ export const metadata: Metadata = {
     title: "디지털과포용성네트워크",
     description:
       "포용적 디지털 사회를 위한 연구·교육·정책 활동. 디지털 소외 해소와 사회 참여 기회 확대를 위해 노력합니다.",
-    images: ["https://storage.googleapis.com/focus-pathfinder/e675f822-6cdb-4e11-9d02-d94b102cb7ce"],
+    images: [
+      "https://storage.googleapis.com/focus-pathfinder/e675f822-6cdb-4e11-9d02-d94b102cb7ce",
+    ],
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: "/favicon.ico",
   },
-  metadataBase: new URL("https://ndie-fe-985895714915.asia-northeast1.run.app/"),
+  metadataBase: new URL(
+    "https://ndie-fe-985895714915.asia-northeast1.run.app/",
+  ),
 };
 
 export default function RootLayout({
