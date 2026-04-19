@@ -26,25 +26,50 @@ const defaultData: TimelineData = {
 export default function NDIETimeline() {
   const [timelineData, setTimelineData] = useState<TimelineData>(defaultData);
   const [selectedYear, setSelectedYear] = useState("2024");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const db = await getFirebaseDb();
-        if (!db) return;
+        if (!db) {
+          setIsLoading(false);
+          return;
+        }
 
         const { doc, getDoc } = await import("firebase/firestore");
         const docRef = doc(db, "history", "timeline");
         const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setTimelineData(docSnap.data() as TimelineData);
+        if (docSnap.exists() && Object.keys(docSnap.data()).length > 0) {
+          const data = docSnap.data() as TimelineData;
+          // 내부 배열이 모두 비어있는지 확인
+          const hasItems = Object.values(data).some(arr => arr.length > 0);
+          if (hasItems) {
+            setTimelineData(data);
+            const loadedYears = Object.keys(data).sort();
+            if (loadedYears.length > 0) {
+              setSelectedYear(loadedYears[loadedYears.length - 1]);
+            }
+          } else {
+            // 빈 배열만 있다면 기본 데이터 보여주기
+            const defYears = Object.keys(defaultData).sort();
+            if (defYears.length > 0) setSelectedYear(defYears[defYears.length - 1]);
+          }
+        } else {
+          // Fallback if data doesn't exist
+          const defYears = Object.keys(defaultData).sort();
+          if (defYears.length > 0) setSelectedYear(defYears[defYears.length - 1]);
         }
       } catch (e) {
         console.error("연혁 로드 실패:", e);
+      } finally {
+        setIsLoading(false);
       }
     };
     loadData();
   }, []);
+
+  if (isLoading) return null;
 
   const years = Object.keys(timelineData).sort();
   const entries = timelineData[selectedYear] || [];

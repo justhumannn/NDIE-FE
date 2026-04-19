@@ -71,8 +71,8 @@ export default function InquiryForm() {
   return (
     // 전체 컨테이너 스타일 변경
     // 이미지에 맞춰 배경색 제거, 중앙 정렬, 상단 패딩 추가
-    <div className="absolute left-0 w-full h-full flex flex-col items-center bg-white px-4 md:px-40">
-      <div className="w-full h-full px-8 py-12"> {/* 내부 컨테이너 */}
+    <div className="relative w-full min-h-screen flex flex-col items-center bg-[#F8F8F8] px-4 md:px-40 pt-10">
+      <div className="w-full max-w-6xl px-8 py-12 bg-white rounded-2xl shadow-sm mt-8"> {/* 내부 컨테이너 */}
         <h1 className="text-4xl font-bold mb-16 text-gray-800">문의하기</h1> {/* 제목 스타일 */}
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-0 md:gap-x-20 gap-y-12 w-full">

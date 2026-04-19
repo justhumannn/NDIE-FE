@@ -29,6 +29,7 @@ export const Header = () => {
     { href: "/act", label: "활동" },
     { href: "/qna", label: "QnA" },
     { href: "/announcement", label: "공지사항" },
+    { href: "/inquiry", label: "문의하기" },
   ];
 
   const closeMenu = () => setIsMenuOpen(false);

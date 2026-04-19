@@ -19,13 +19,14 @@ export function List({ name, data }: ListProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { collection, getDocs } = await import("firebase/firestore");
+        const { collection, getDocs, query, orderBy } = await import("firebase/firestore");
         const { getFirebaseDb } = await import("@/lib/firebase");
 
         const db = await getFirebaseDb();
         if (!db) return;
 
-        const querySnapshot = await getDocs(collection(db, data));
+        const q = query(collection(db, data), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
         const items = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()

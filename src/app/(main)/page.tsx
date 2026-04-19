@@ -33,27 +33,41 @@ const defaultTheme: ThemeConfig = {
 export default function Home() {
   const [intro, setIntro] = useState<IntroConfig>(defaultIntro);
   const [theme, setTheme] = useState<ThemeConfig>(defaultTheme);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadConfig = async () => {
       try {
         const db = await getFirebaseDb();
-        if (!db) return;
+        if (!db) {
+          setIsLoading(false);
+          return;
+        }
 
         const { doc, getDoc } = await import("firebase/firestore");
         const docRef = doc(db, "siteConfig", "main");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          if (data.intro) setIntro({ ...defaultIntro, ...data.intro });
+          if (data.intro) {
+            setIntro({ 
+              ...defaultIntro, 
+              highlightWord: data.intro.highlightWord || defaultIntro.highlightWord,
+              description: defaultIntro.description, // 사용자 요청으로 긴 글자 고정
+            });
+          }
           if (data.theme) setTheme({ ...defaultTheme, ...data.theme });
         }
       } catch (e) {
         console.error("사이트 설정 로드 실패:", e);
+      } finally {
+        setIsLoading(false);
       }
     };
     loadConfig();
   }, []);
+
+  if (isLoading) return <div className="min-h-[50rem]" />;
 
   return (
     <div>
@@ -77,9 +91,6 @@ export default function Home() {
       </ContentContainer>
       <ContentContainer>
         <TimeLine />
-      </ContentContainer>
-      <ContentContainer>
-        <InquiryForm />
       </ContentContainer>
     </div>
   );

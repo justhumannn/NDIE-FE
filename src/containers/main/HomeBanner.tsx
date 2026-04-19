@@ -22,25 +22,39 @@ const defaultConfig: BannerConfig = {
 
 export default function HomeBanner() {
   const [config, setConfig] = useState<BannerConfig>(defaultConfig);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadConfig = async () => {
       try {
         const db = await getFirebaseDb();
-        if (!db) return;
+        if (!db) {
+          setIsLoading(false);
+          return;
+        }
 
         const { doc, getDoc } = await import("firebase/firestore");
         const docRef = doc(db, "siteConfig", "main");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists() && docSnap.data().banner) {
-          setConfig({ ...defaultConfig, ...docSnap.data().banner });
+          const fetchedBanner = docSnap.data().banner;
+          setConfig({ 
+            ...defaultConfig, 
+            ...fetchedBanner,
+            descriptionKo: defaultConfig.descriptionKo, // 새로고침 할 때 긴 글로 바꿔 달라는 요청 적용
+            descriptionEn: defaultConfig.descriptionEn,
+          });
         }
       } catch (e) {
         console.error("배너 설정 로드 실패:", e);
+      } finally {
+        setIsLoading(false);
       }
     };
     loadConfig();
   }, []);
+
+  if (isLoading) return null;
 
   return (
     <div className={`absolute top-1/2 -translate-y-1/2 z-1 bg-white/50 min-h-[30rem] md:h-[40rem] left-4 right-4 md:left-[10rem] md:right-[10rem] 
