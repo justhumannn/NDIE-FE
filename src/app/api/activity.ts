@@ -1,7 +1,6 @@
 import { getFirebaseDb, getFirebaseStorage, getFirebaseAuth } from "@/lib/firebase";
 
 export const CreateActivity = async (data: { title: string, content: string, image: string }) => {
-  console.log('[CreateActivity] 시작:', data);
 
   try {
     // Firestore 연결 확인
@@ -14,10 +13,8 @@ export const CreateActivity = async (data: { title: string, content: string, ima
       };
     }
 
-    // Firebase Auth 상태 확인
     const auth = await getFirebaseAuth();
     const currentUser = auth?.currentUser;
-    console.log('[CreateActivity] Firebase Auth 상태:', currentUser ? `로그인됨 (${currentUser.email})` : '로그인 안됨');
     
     if (!currentUser) {
       return {
@@ -26,19 +23,15 @@ export const CreateActivity = async (data: { title: string, content: string, ima
       };
     }
 
-    console.log('[CreateActivity] Firestore 연결 확인 완료');
-
     const docData = {
       ...data,
       uid: currentUser.uid,
       createdAt: new Date().toISOString()
     };
 
-    console.log('[CreateActivity] addDoc 호출 시작...');
     const { collection, addDoc } = await import("firebase/firestore");
     const docRef = await addDoc(collection(db, "activity"), docData);
     
-    console.log('[CreateActivity] 문서 생성 성공:', docRef.id);
     return { status: 200 as const };
   } catch (e) {
     console.error('[CreateActivity] 오류:', e);
@@ -68,7 +61,6 @@ export const CreateActivity = async (data: { title: string, content: string, ima
 };
 
 export const uploadImg = async (data: FormData) => {
-  console.log('[uploadImg] 시작');
 
   try {
     // Storage 연결 확인
@@ -83,30 +75,24 @@ export const uploadImg = async (data: FormData) => {
 
     const file = data.get('file') as File;
     if (!file) {
-      console.error('[uploadImg] 파일 없음');
       throw new Error("파일이 선택되지 않았습니다.");
     }
-
-    console.log('[uploadImg] 파일 업로드 시작:', file.name);
 
     const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
     const storageRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
 
-    // 타임아웃 60초 (이미지 업로드는 시간이 더 걸릴 수 있음)
+    // 타임아웃 60초
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => {
-        console.error('[uploadImg] 타임아웃 발생');
         reject(new Error("이미지 업로드 시간이 초과되었습니다."));
       }, 60000)
     );
 
     const uploadPromise = uploadBytes(storageRef, file)
       .then((snapshot) => {
-        console.log('[uploadImg] 업로드 완료, URL 가져오기');
         return getDownloadURL(snapshot.ref);
       })
       .then((downloadURL) => {
-        console.log('[uploadImg] 다운로드 URL 생성 완료:', downloadURL);
         return downloadURL;
       });
 

@@ -44,11 +44,9 @@ export default function WriteFooter({
 
       // 이미 유저가 있다면 즉시 반환
       if (auth.currentUser) {
-        console.log('[WriteFooter] 현재 로그인된 사용자:', auth.currentUser.email);
         return auth.currentUser;
       }
 
-      console.log('[WriteFooter] Firebase Auth 상태 복원 대기 중...');
 
       // 없다면 상태 변화를 기다림 (최대 10초로 증가)
       return new Promise<{ displayName?: string | null; email?: string | null } | null>((resolve) => {
@@ -58,7 +56,6 @@ export default function WriteFooter({
           if (!resolved) {
             resolved = true;
             unsubscribe();
-            console.error('[WriteFooter] Firebase Auth 상태 복원 타임아웃');
             alert("로그인 정보를 불러오는데 실패했습니다. 다시 로그인해주세요.");
             router.push("/login");
             resolve(null);
@@ -66,7 +63,6 @@ export default function WriteFooter({
         }, 10000);
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-          console.log('[WriteFooter] onAuthStateChanged 호출:', user?.email || 'null');
           if (!resolved) {
             if (user) {
               resolved = true;

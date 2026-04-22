@@ -59,7 +59,6 @@ export default function OrgChart() {
   }, []);
 
   if (isLoading) return null;
-  // If the data is empty or still default (root), we hide it per user request
   if (orgTreeData.name === "root" || !orgTreeData.name) return null;
   
   return (

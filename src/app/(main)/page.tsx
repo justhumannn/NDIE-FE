@@ -53,7 +53,7 @@ export default function Home() {
             setIntro({ 
               ...defaultIntro, 
               highlightWord: data.intro.highlightWord || defaultIntro.highlightWord,
-              description: defaultIntro.description, // 사용자 요청으로 긴 글자 고정
+              description: defaultIntro.description,
             });
           }
           if (data.theme) setTheme({ ...defaultTheme, ...data.theme });

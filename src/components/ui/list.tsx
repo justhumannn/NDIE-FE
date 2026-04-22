@@ -31,7 +31,6 @@ export function List({ name, data }: ListProps) {
           id: doc.id,
           ...doc.data()
         }));
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setitem(items as any);
       } catch (error) {
         console.error("Error fetching data:", error);

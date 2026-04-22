@@ -42,7 +42,6 @@ export default function NDIETimeline() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists() && Object.keys(docSnap.data()).length > 0) {
           const data = docSnap.data() as TimelineData;
-          // 내부 배열이 모두 비어있는지 확인
           const hasItems = Object.values(data).some(arr => arr.length > 0);
           if (hasItems) {
             setTimelineData(data);
@@ -51,12 +50,10 @@ export default function NDIETimeline() {
               setSelectedYear(loadedYears[loadedYears.length - 1]);
             }
           } else {
-            // 빈 배열만 있다면 기본 데이터 보여주기
             const defYears = Object.keys(defaultData).sort();
             if (defYears.length > 0) setSelectedYear(defYears[defYears.length - 1]);
           }
         } else {
-          // Fallback if data doesn't exist
           const defYears = Object.keys(defaultData).sort();
           if (defYears.length > 0) setSelectedYear(defYears[defYears.length - 1]);
         }

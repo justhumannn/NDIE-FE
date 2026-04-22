@@ -41,7 +41,7 @@ export default function HomeBanner() {
           setConfig({ 
             ...defaultConfig, 
             ...fetchedBanner,
-            descriptionKo: defaultConfig.descriptionKo, // 새로고침 할 때 긴 글로 바꿔 달라는 요청 적용
+            descriptionKo: defaultConfig.descriptionKo,
             descriptionEn: defaultConfig.descriptionEn,
           });
         }
